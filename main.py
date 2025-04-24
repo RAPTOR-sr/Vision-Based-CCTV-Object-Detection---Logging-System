@@ -1,4 +1,3 @@
-# live_object_captioner/main.py
 import tkinter as tk
 from tkinter import ttk, messagebox
 import cv2
@@ -6,20 +5,20 @@ from PIL import Image, ImageTk
 import threading
 import time
 import os
-import numpy as np # Make sure numpy is imported
+import numpy as np 
 
 # Import our custom modules
 from object_detector import ObjectDetector
-from caption_generator import CaptionGenerator # <<< Updated import
+from caption_generator import CaptionGenerator 
 from data_logger import DataLogger
 
 # --- Configuration ---
 VIDEO_SOURCE = 0  # 0 for default webcam, or use "path/to/video.mp4" or "rtsp://..."
-YOLO_MODEL = 'yolov8n.pt' # Smaller YOLO model might be needed due to BLIP overhead
-CONFIDENCE_THRESHOLD = 0.25 # Maybe slightly higher threshold
+YOLO_MODEL = 'yolov8n.pt' 
+CONFIDENCE_THRESHOLD = 0.25 
 OUTPUT_DIR = 'output'
 LOG_FILENAME = 'detections.csv'
-LOG_INTERVAL_SECONDS = 3.0 # <<< New setting: Log every 3 seconds
+LOG_INTERVAL_SECONDS = 3.0 
 # --- Configuration End ---
 
 class Application:
@@ -42,11 +41,10 @@ class Application:
              self.window.destroy()
              return
 
-        # 2. Caption Generator (using BLIP)
-        #    This might take a while the first time to download the model
+
         self.status_label_text = tk.StringVar(value="Status: Initializing BLIP model (may take time)...") # For status bar
         # Create UI elements that use status_label_text *before* potentially long init
-        self._setup_ui_elements() # Separate UI setup
+        self._setup_ui_elements() 
         self.window.update_idletasks() # Update UI to show the message
         self.captioner = CaptionGenerator() # <<< Uses BLIP now
         if self.captioner.model is None:
@@ -178,14 +176,7 @@ class Application:
 
                 current_time = time.time() # Get time at the start of processing the frame
 
-                # --- Optional: Frame Skipping for Performance ---
-                # process_this_frame = True # Or based on a counter/timer
-                # if not process_this_frame:
-                #     # Just display the frame without processing
-                #     frame_rgb_display = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
-                #     self.window.after(0, self.update_canvas, frame_rgb_display)
-                #     time.sleep(0.01) # Prevent busy loop
-                #     continue # Skip rest of the loop
+
 
                 # 1. Object Detection
                 detections = self.detector.detect_objects(frame_bgr)

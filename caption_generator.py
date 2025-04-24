@@ -1,4 +1,3 @@
-# live_object_captioner/caption_generator.py
 import torch
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration

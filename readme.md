@@ -22,7 +22,7 @@ This project is a vision-based CCTV system that performs real-time object detect
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/vision-based-cctv.git
+   git clone https://github.com/RAPTOR-sr/Vision-Based-CCTV-Object-Detection---Logging-System
    cd vision-based-cctv
    ```
 
@@ -36,7 +36,6 @@ Vision-Based CCTV Object Detection & Logging System/
 ├── object_detector.py     # Handles object detection using YOLOv8
 ├── output/                # Directory for storing logs
 │   └── detections.csv     # CSV file with logged detection data
-├── test.py                # Script to test PyTorch and CUDA setup
 ├── yolov8n.pt             # YOLOv8 model file (not included in the repo)
 └── requirements.txt       # List of required Python packages
 ```
@@ -70,8 +69,9 @@ Contributions are welcome! Please follow these steps:
 4. Open a pull request to the main repository.
 
 ## License
+Copyright (c) 2025 Shivansh
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is currently unlicensed. We intend to add an open-source license in the future.
 
 ## Acknowledgments
 
