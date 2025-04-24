@@ -9,7 +9,7 @@ import numpy as np
 
 # Import our custom modules
 from object_detector import ObjectDetector
-from caption_generator import CaptionGenerator # <<< Updated import
+from caption_generator import CaptionGenerator 
 from data_logger import DataLogger
 
 # --- Configuration ---
