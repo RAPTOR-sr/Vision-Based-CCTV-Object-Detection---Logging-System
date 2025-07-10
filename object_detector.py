@@ -16,6 +16,7 @@ class ObjectDetector:
         """
         try:
             self.model = YOLO(model_path)
+            self.model.to('cuda') 
             print(f"YOLO model '{model_path}' loaded successfully.")
         except Exception as e:
             print(f"Error loading YOLO model: {e}")

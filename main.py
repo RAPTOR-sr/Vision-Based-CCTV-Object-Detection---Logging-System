@@ -15,7 +15,7 @@ from data_logger import DataLogger
 # --- Configuration ---
 VIDEO_SOURCE = 0  # 0 for default webcam, or use "path/to/video.mp4" or "rtsp://..."
 YOLO_MODEL = 'yolov8n.pt' 
-CONFIDENCE_THRESHOLD = 0.25 
+CONFIDENCE_THRESHOLD = 0.5
 OUTPUT_DIR = 'output'
 LOG_FILENAME = 'detections.csv'
 LOG_INTERVAL_SECONDS = 3.0 
