@@ -6,7 +6,7 @@ class ObjectDetector:
     """
     Handles object detection using a YOLOv8 model.
     """
-    def __init__(self, model_path='D:\Projects\AI CCTV\yolov8n.pt'):
+    def __init__(self, model_path='yolov8n.pt'):
         """
         Initializes the detector.
 
@@ -16,8 +16,16 @@ class ObjectDetector:
         """
         try:
             self.model = YOLO(model_path)
-            self.model.to('cuda') 
-            print(f"YOLO model '{model_path}' loaded successfully.")
+            # Determine the best device to use
+            import torch
+            if torch.cuda.is_available() and torch.cuda.device_count() > 0:
+                self.device = 'cuda'
+                self.model.to('cuda')
+                print(f"YOLO model '{model_path}' loaded successfully on GPU (CUDA).")
+            else:
+                self.device = 'cpu'
+                self.model.to('cpu')
+                print(f"YOLO model '{model_path}' loaded successfully on CPU (CUDA not available).")
         except Exception as e:
             print(f"Error loading YOLO model: {e}")
             print("Please ensure the model file exists and dependencies are installed.")
@@ -37,8 +45,8 @@ class ObjectDetector:
             print(f"Frame shape: {frame.shape}")
             print("Running YOLO inference...")
             
-            # Force CPU inference
-            results = self.model(frame, device='cpu')
+            # Use the device determined during initialization
+            results = self.model(frame, device=self.device)
             
             detections = []
             for result in results:

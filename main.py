@@ -66,19 +66,31 @@ class Application:
         self.status_label_text.set("Status: Idle") # Final status
 
     def _setup_ui_elements(self):
-        """Creates the UI widgets."""
+        """Creates the UI widgets with improved layout."""
         self.main_frame = ttk.Frame(self.window, padding="10")
         self.main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
 
-        self.canvas = tk.Canvas(self.main_frame, bg="lightgray")
-        self.canvas.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S))
-        self.main_frame.grid_rowconfigure(0, weight=1)
-        self.main_frame.grid_columnconfigure(0, weight=1)
+        # Configure grid layout: 2 columns, 2 rows
+        self.main_frame.grid_columnconfigure(0, weight=2)  # Left column (wider for video)
+        self.main_frame.grid_columnconfigure(1, weight=1)  # Right column
+        self.main_frame.grid_rowconfigure(0, weight=2)     # Top/video area
+        self.main_frame.grid_rowconfigure(1, weight=1)     # Bottom/logs area
 
-        self.controls_frame = ttk.Frame(self.main_frame, padding="5")
-        self.controls_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E))
+        # ===== LEFT SIDE: Video Stream =====
+        self.left_frame = ttk.Frame(self.main_frame, relief=tk.SUNKEN, borderwidth=2)
+        self.left_frame.grid(row=0, column=0, rowspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 5), pady=0)
+        self.left_frame.grid_rowconfigure(0, weight=1)
+        self.left_frame.grid_columnconfigure(0, weight=1)
+
+        # Video Canvas
+        self.canvas = tk.Canvas(self.left_frame, bg="lightgray")
+        self.canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        # Control Buttons (below video)
+        self.controls_frame = ttk.Frame(self.left_frame, padding="5")
+        self.controls_frame.grid(row=1, column=0, sticky=(tk.W, tk.E))
 
         self.btn_start = ttk.Button(self.controls_frame, text="Start Feed", command=self.start_video)
         self.btn_start.grid(row=0, column=0, padx=5, pady=5)
@@ -86,12 +98,50 @@ class Application:
         self.btn_stop = ttk.Button(self.controls_frame, text="Stop Feed", command=self.stop_video, state=tk.DISABLED)
         self.btn_stop.grid(row=0, column=1, padx=5, pady=5)
 
-        # Use StringVar for status label to update it easily
-        self.status_label = ttk.Label(self.main_frame, textvariable=self.status_label_text, relief=tk.SUNKEN, anchor=tk.W)
-        self.status_label.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5,0))
+        # ===== UPPER RIGHT: Caption Display =====
+        self.caption_frame = ttk.LabelFrame(self.main_frame, text="Live Captions", padding="5", relief=tk.SUNKEN, borderwidth=2)
+        self.caption_frame.grid(row=0, column=1, sticky=(tk.W, tk.E, tk.N, tk.S), padx=0, pady=(0, 5))
+        self.caption_frame.grid_rowconfigure(0, weight=1)
+        self.caption_frame.grid_columnconfigure(0, weight=1)
+
+        self.caption_text = tk.Text(self.caption_frame, height=10, wrap=tk.WORD, state=tk.DISABLED, bg="white", relief=tk.FLAT)
+        self.caption_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        caption_scrollbar = ttk.Scrollbar(self.caption_frame, orient=tk.VERTICAL, command=self.caption_text.yview)
+        caption_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        self.caption_text.config(yscrollcommand=caption_scrollbar.set)
+
+        # ===== LOWER RIGHT: Log Display =====
+        self.log_frame = ttk.LabelFrame(self.main_frame, text="Detection Log", padding="5", relief=tk.SUNKEN, borderwidth=2)
+        self.log_frame.grid(row=1, column=1, sticky=(tk.W, tk.E, tk.N, tk.S), padx=0, pady=0)
+        self.log_frame.grid_rowconfigure(0, weight=1)
+        self.log_frame.grid_columnconfigure(0, weight=1)
+
+        # Treeview for log data
+        tree_cols = ('Timestamp', 'Object', 'Caption')
+        self.log_tree = ttk.Treeview(self.log_frame, columns=tree_cols, height=10, show='headings')
+        
+        # Define column headings and widths
+        self.log_tree.heading('Timestamp', text='Timestamp')
+        self.log_tree.heading('Object', text='Object')
+        self.log_tree.heading('Caption', text='Caption')
+        
+        self.log_tree.column('Timestamp', width=90)
+        self.log_tree.column('Object', width=60)
+        self.log_tree.column('Caption', width=100)
+        
+        self.log_tree.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        log_scrollbar = ttk.Scrollbar(self.log_frame, orient=tk.VERTICAL, command=self.log_tree.yview)
+        log_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        self.log_tree.config(yscrollcommand=log_scrollbar.set)
+
+        # Status bar at the bottom
+        self.status_label = ttk.Label(self.window, textvariable=self.status_label_text, relief=tk.SUNKEN, anchor=tk.W)
+        self.status_label.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(5, 0))
 
         self.window.update_idletasks()
-        self.window.minsize(640, 480)
+        self.window.minsize(1200, 700)
 
     def start_video(self):
         if not self.is_running:
@@ -200,7 +250,9 @@ class Application:
 
                             # 4. Log Data (ONLY if interval has passed)
                             if ready_to_log and self.logger.filepath:
+                                timestamp = time.strftime('%H:%M:%S')
                                 self.logger.log_detection(det['class_name'], caption)
+                                self.window.after(0, self.update_log_display, timestamp, det['class_name'], caption)
                                 objects_logged_this_interval += 1
 
                         except Exception as cap_err:
@@ -212,6 +264,9 @@ class Application:
                         x1, y1, x2, y2 = det['bbox']
                         label = f"{det['class_name']}: {caption[:60]}{'...' if len(caption)>60 else ''}" # Show class + caption (truncated)
                         label += f" ({det['confidence']:.2f})"
+
+                        # Update caption display in real-time
+                        self.window.after(0, self.update_caption_display, det['class_name'], caption)
 
                         # Basic text color logic (same as before)
                         text_color = (0, 0, 0) # Black
@@ -280,6 +335,31 @@ class Application:
 
             except Exception as e:
                 print(f"Error updating canvas: {e}")
+
+    def update_caption_display(self, object_name, caption):
+        """Updates the real-time caption display."""
+        try:
+            self.caption_text.config(state=tk.NORMAL)
+            # Clear old content and show latest caption
+            self.caption_text.delete('1.0', tk.END)
+            display_text = f"{object_name}:\n{caption}"
+            self.caption_text.insert('1.0', display_text)
+            self.caption_text.config(state=tk.DISABLED)
+        except Exception as e:
+            print(f"Error updating caption display: {e}")
+
+    def update_log_display(self, timestamp, object_name, caption):
+        """Adds a new entry to the log display."""
+        try:
+            self.log_tree.insert('', 'end', values=(timestamp, object_name, caption))
+            # Keep only the last 50 entries
+            all_items = self.log_tree.get_children()
+            if len(all_items) > 50:
+                self.log_tree.delete(all_items[0])
+            # Scroll to bottom
+            self.log_tree.yview_moveto(1)
+        except Exception as e:
+            print(f"Error updating log display: {e}")
 
 
     # on_closing function remains the same as before
