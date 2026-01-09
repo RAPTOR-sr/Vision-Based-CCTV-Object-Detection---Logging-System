@@ -26,7 +26,7 @@ class CaptionGenerator:
         if device is None:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
-            self.device = 'cpu'
+            self.device = device  # Use the user-provided device
         print(f"Using device: {self.device}")
 
         try:
