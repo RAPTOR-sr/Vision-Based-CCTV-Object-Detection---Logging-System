@@ -7,7 +7,7 @@ This project is a vision-based CCTV system that performs real-time object detect
 - **Real-Time Object Detection**: Detects objects in live video feeds using YOLOv8.
 - **Caption Generation**: Generates descriptive captions for detected objects using the BLIP model.
 - **Data Logging**: Logs detection data (timestamp, object category, and caption) to a CSV file.
-- **User-Friendly Interface**: Provides a simple GUI for starting/stopping the video feed and viewing results.
+- **User-Friendly Interface**: Provides a simple GUI for starting/stopping the video feed , right top show live captions and right   botton is logs.
 
 ## Technologies Used
 
