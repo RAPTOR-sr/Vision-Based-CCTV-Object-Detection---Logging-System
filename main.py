@@ -13,7 +13,7 @@ from caption_generator import CaptionGenerator
 from data_logger import DataLogger
 
 # --- Configuration ---
-VIDEO_SOURCE = 0  # 0 for default webcam, or use "path/to/video.mp4" or "rtsp://..."
+VIDEO_SOURCE = 0 # 0 for default webcam, or use "path/to/video.mp4" or "rtsp://..."
 YOLO_MODEL = 'yolov8n.pt' 
 CONFIDENCE_THRESHOLD = 0.5
 OUTPUT_DIR = 'output'
