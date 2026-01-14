@@ -78,3 +78,4 @@ This project is currently unlicensed. We intend to add an open-source license in
 - [Ultralytics](https://github.com/ultralytics) for YOLOv8.
 - [Salesforce Research](https://github.com/salesforce) for the BLIP model.
 - The open-source community for their contributions to PyTorch, Transformers, and other libraries used in this project.
+-
