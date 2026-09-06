@@ -14,11 +14,12 @@ from data_logger import DataLogger
 
 # --- Configuration ---
 VIDEO_SOURCE = 0 # 0 for default webcam, or use "path/to/video.mp4" or "rtsp://..."
-YOLO_MODEL = 'yolov8n.pt' 
+YOLO_MODEL = 'yolov26n.pt' 
 CONFIDENCE_THRESHOLD = 0.5
 OUTPUT_DIR = 'output'
 LOG_FILENAME = 'detections.csv'
 LOG_INTERVAL_SECONDS = 1.0 
+CAPTION_INTERVAL_FRAMES = 10
 # --- Configuration End ---
 
 class Application:
@@ -153,6 +154,10 @@ class Application:
                 if not self.vid.isOpened():
                     raise ValueError(f"Unable to open video source: {self.video_source}")
 
+                self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+                self.vid.set(cv2.CAP_PROP_FPS, 30)
+
                 width = int(self.vid.get(cv2.CAP_PROP_FRAME_WIDTH))
                 height = int(self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
                 if width > 0 and height > 0:
@@ -204,6 +209,7 @@ class Application:
     def video_loop(self):
         frame_count = 0
         start_time = time.time()
+        captions_by_class = {}
         # last_log_time is now instance variable self.last_log_time
 
         while self.is_running and self.vid and self.vid.isOpened():
@@ -219,14 +225,7 @@ class Application:
                     print("Invalid frame dimensions")
                     continue
                     
-                print("Processing frame...")
-                # 1. Object Detection
-                detections = self.detector.detect_objects(frame_bgr)
-                print(f"Got {len(detections)} detections")
-
                 current_time = time.time() # Get time at the start of processing the frame
-
-
 
                 # 1. Object Detection
                 detections = self.detector.detect_objects(frame_bgr)
@@ -243,10 +242,11 @@ class Application:
                     if det['confidence'] >= CONFIDENCE_THRESHOLD:
                         caption = "caption_pending" # Placeholder
                         try:
-                            # 3. Generate Caption (Potentially slow!)
-                            # Pass the original BGR frame for potential internal use
-                            # by captioner, even if it converts to RGB/PIL later
-                            caption = self.captioner.generate_caption(frame_bgr, det)
+                            object_name = det['class_name']
+                            if (object_name not in captions_by_class or
+                                    frame_count % CAPTION_INTERVAL_FRAMES == 0):
+                                captions_by_class[object_name] = self.captioner.generate_caption(frame_bgr, det)
+                            caption = captions_by_class[object_name]
 
                             # 4. Log Data (ONLY if interval has passed)
                             if ready_to_log and self.logger.filepath:
