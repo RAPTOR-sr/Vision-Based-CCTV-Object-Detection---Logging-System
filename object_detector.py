@@ -4,15 +4,15 @@ import cv2
 
 class ObjectDetector:
     """
-    Handles object detection using a YOLOv8 model.
+    Handles object detection using a YOLO model.
     """
-    def __init__(self, model_path='yolov8n.pt'):
+    def __init__(self, model_path='yolov26n.pt'):
         """
         Initializes the detector.
 
         Args:
-            model_path (str): Path to the YOLOv8 model file (e.g., 'yolov8n.pt').
-                              'yolov8n.pt' is small and fast.
+            model_path (str): Path to the YOLO model file (e.g., 'yolov8n.pt').
+                              'yolovXx.pt' is small and fast.
         """
         try:
             self.model = YOLO(model_path)
@@ -46,7 +46,7 @@ class ObjectDetector:
             print("Running YOLO inference...")
             
             # Use the device determined during initialization
-            results = self.model(frame, device=self.device)
+            results = self.model(frame, device=self.device, imgsz=320)
             
             detections = []
             for result in results:

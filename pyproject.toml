@@ -1,0 +1,56 @@
+[project]
+name = "ai-based-cctv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Shivansh", email = "" }
+]
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "huggingface-hub==0.30.1",
+    "matplotlib==3.10.0",
+    "nltk==3.9.1",
+    "numpy>=2.1.1",
+    "opencv-python==4.11.0.86",
+    "pandas==2.2.3",
+    "pillow==11.1.0",
+    "pycocoevalcap==1.2",
+    "pycocotools==2.0.8",
+    "rouge-score==0.1.2",
+    "scipy==1.15.1",
+    "seaborn==0.13.2",
+    "supervision==0.25.1",
+    "torch==2.6.0+cu118",
+    "torchaudio==2.6.0+cu118",
+    "torchvision==0.21.0",
+    "tqdm==4.67.1",
+    "transformers==4.50.3",
+    "ultralytics==8.3.74",
+]
+
+[project.scripts]
+ai-based-cctv = "ai_based_cctv:main"
+
+[build-system]
+requires = ["uv_build>=0.12.8,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+environments = ["sys_platform == 'win32'"]
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },
+]
+torchvision = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },
+]
+torchaudio = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },
+]
