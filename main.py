@@ -18,7 +18,7 @@ YOLO_MODEL = 'yolov8n.pt'
 CONFIDENCE_THRESHOLD = 0.5
 OUTPUT_DIR = 'output'
 LOG_FILENAME = 'detections.csv'
-LOG_INTERVAL_SECONDS = 3.0 
+LOG_INTERVAL_SECONDS = 1.0 
 # --- Configuration End ---
 
 class Application:

@@ -9,7 +9,7 @@ class CaptionGenerator:
     """
     Generates captions for image regions using the BLIP model.
     """
-    def __init__(self, model_id="Salesforce/blip-image-captioning-base", device=None):
+    def __init__(self, model_id="gospacedev/blip-image-captioning-base-bf16", device=None):
         """
         Initializes the BLIP captioning model and processor.
 
@@ -88,7 +88,7 @@ class CaptionGenerator:
             # Generate caption
             start_time = time.time()
             with torch.no_grad(): # Important for inference efficiency
-                out = self.model.generate(**inputs, max_length=50, num_beams=4) # Adjust max_length/num_beams as needed
+                out = self.model.generate(**inputs, max_length=20, num_beams=1) # Adjust max_length/num_beams as needed
             end_time = time.time()
 
             # Decode caption
