@@ -6,7 +6,7 @@ class ObjectDetector:
     """
     Handles object detection using a YOLO model.
     """
-    def __init__(self, model_path='yolov26n.pt'):
+    def __init__(self, model_path):
         """
         Initializes the detector.
 
