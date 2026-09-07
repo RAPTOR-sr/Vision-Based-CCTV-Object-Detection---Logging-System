@@ -44,9 +44,16 @@ class ObjectDetector:
                 
             print(f"Frame shape: {frame.shape}")
             print("Running YOLO inference...")
-            
+
+            #Yolo CLasses
+            SECURITY_CLASSES = [0, 1, 2, 3, 5, 7, 15, 16, 24, 26, 28]
             # Use the device determined during initialization
-            results = self.model(frame, device=self.device, imgsz=320)
+            results = self.model(
+                frame,
+                device = self.device,
+                imgsz = 416,
+                classes = SECURITY_CLASSES,
+            )
             
             detections = []
             for result in results:

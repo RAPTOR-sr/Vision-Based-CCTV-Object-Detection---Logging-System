@@ -260,27 +260,13 @@ class Application:
                              caption = f"a {det['class_name']} (error)"
 
 
-                        # 5. Draw Bounding Box and Caption on Frame
+                        # 5. Draw only the bounding box on the video frame.
                         x1, y1, x2, y2 = det['bbox']
-                        label = f"{det['class_name']}: {caption[:60]}{'...' if len(caption)>60 else ''}" # Show class + caption (truncated)
-                        label += f" ({det['confidence']:.2f})"
 
                         # Update caption display in real-time
                         self.window.after(0, self.update_caption_display, det['class_name'], caption)
 
-                        # Basic text color logic (same as before)
-                        text_color = (0, 0, 0) # Black
-                        try:
-                            roi_for_text = frame_rgb_display[max(0, y1-20):y1, x1:min(frame_rgb_display.shape[1], x1 + len(label)*8)]
-                            if roi_for_text.size > 0 and np.mean(roi_for_text) < 128:
-                                text_color = (255, 255, 255) # White
-                        except Exception as e:
-                            # print(f"Minor error checking text bg color: {e}")
-                            pass
-
                         cv2.rectangle(frame_rgb_display, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        cv2.putText(frame_rgb_display, label, (x1, y1 - 10),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, text_color, 1, cv2.LINE_AA) # Smaller font
 
                 # --- Reset log timer AFTER processing the frame if logging occurred ---
                 if objects_logged_this_interval > 0:
