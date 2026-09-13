@@ -15,6 +15,7 @@ class CaptionGenerator:
 
         Args:
             model_id (str): The Hugging Face model ID for BLIP.
+                            "gospacedev/blip-image-captioning-base-bf16 is more faster/smaller"
                             "Salesforce/blip-image-captioning-base" is smaller/faster.
                             "Salesforce/blip-image-captioning-large" is more accurate but slower/larger.
             device (str, optional): The device to run the model on ('cuda', 'cpu').
