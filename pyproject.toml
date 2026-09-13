@@ -1,7 +1,8 @@
 [project]
 name = "ai-based-cctv"
 version = "0.1.0"
-description = "Add your description here"
+description = "Real-time CCTV surveillance system using YOLO for object detection and BLIP for image captioning. It processes webcam or video streams, displays detected objects with captions, and logs detection results with timestamps to a CSV file. We achive upto 15-20 fps on Laptop with GPU
+"
 readme = "README.md"
 authors = [
     { name = "Shivansh", email = "" }
